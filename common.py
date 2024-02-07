@@ -38,7 +38,7 @@ class DbGidFS(object):
             if gfs_Data:
                 self.insert_or_read(uploadId, gfs_Data)
         else:
-            print("insert table")
+            logging.info("insert table")
             if collection_data:
                 self.collection.insert_one(collection_data)
 
@@ -50,15 +50,15 @@ class DbGidFS(object):
         try:
             result = self.db.fs.files.find_one({'filename': uploadId})  # dict
             if result:
-                print('已经存在该文件')
+                logging.info('已经存在该文件')
                 file_id = result['_id']
                 output= self.gfs.get(file_id).read()
-                print(output)
+                logging.info(output)
             else:
                 self.gfs.put(content, filename=uploadId)
-                print("upload ok")
+                logging.info("upload ok")
         except Exception as e:
-            print(e)
+            logging.error(e)
 
 
 if __name__ == '__main__':

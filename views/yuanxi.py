@@ -140,7 +140,7 @@ class YuanxiDetectResult(Resource):
                     # mongo_client[mongo_db]["yuanxi_collection"].update_one(filter={"uploadId": uploadId}, update={'$set': newvalues})
 
                     # 使用GridFS解决document大于16MB的限制
-                    db_gridfs = DbGidFS(mongo_client, mongo_db, "yaunxi_collection")
+                    db_gridfs = DbGidFS(mongo_client, mongo_db, "yuanxi_collection")
                     db_gridfs.insert_or_update_table(uploadId, gfs_Data=newvalues)
 
                 data["detectStatus"] = detectStatus_map[data["detectStatus"]]
