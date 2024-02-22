@@ -7,7 +7,7 @@ import gridfs
 import bson
 
 
-mongo_client = pymongo.MongoClient(host=mongo_ip, port=mongo_port, connect=False)
+mongo_client = pymongo.MongoClient(host=mongo_ip, port=mongo_port, connect=False, username="podding", password="Podding_123", authSource="admin")
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s][%(levelname)s][%(filename)s:%(lineno)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
 
