@@ -53,7 +53,7 @@ class DbGidFS(object):
                 logging.info('已经存在该文件')
                 file_id = result['_id']
                 output= self.gfs.get(file_id).read()
-                logging.info(output)
+                logging.debug(output)
             else:
                 self.gfs.put(content, filename=uploadId)
                 logging.info("upload ok")

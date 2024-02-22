@@ -137,11 +137,14 @@ class YuanxiDetectResult(Resource):
                 detectStatus_map = {1: "已完成", 0: "进行中", 2: "检测失败", 3: "上传或者解压文件失败"}
                 if data["detectStatus"] != 0:   # 1=已完成、0=进行中、2=检测失败、3=上传或者解压文件失败
                     newvalues = {"detectStatus": detectStatus_map[data["detectStatus"]], "detectErr": data["detectErr"], "detectList": data["detectList"]}
-                    # mongo_client[mongo_db]["yuanxi_collection"].update_one(filter={"uploadId": uploadId}, update={'$set': newvalues})
+                    try:
+                        mongo_client[mongo_db]["yuanxi_collection"].update_one(filter={"uploadId": uploadId}, update={'$set': newvalues})
+                    except:
+                        print(f"insert mongo error. uploadId: {uploadId}")
 
-                    # 使用GridFS解决document大于16MB的限制
-                    db_gridfs = DbGidFS(mongo_client, mongo_db, "yuanxi_collection")
-                    db_gridfs.insert_or_update_table(uploadId, gfs_Data=newvalues)
+                    # # 使用GridFS解决document大于16MB的限制
+                    # db_gridfs = DbGidFS(mongo_client, mongo_db, "yuanxi_collection")
+                    # db_gridfs.insert_or_update_table(uploadId, gfs_Data=newvalues)
 
                 data["detectStatus"] = detectStatus_map[data["detectStatus"]]
                 return {"code": 200, "message": error_code[200]["message"], "data": data},  error_code[200]["http"]
