@@ -8,13 +8,15 @@ import random
 import traceback
 from pathlib import Path
 import urllib
-from flask import Response
-from flask_restful import Resource, reqparse
 import requests
 requests.packages.urllib3.disable_warnings()
+from flask import Response
+from flask_restful import Resource, reqparse
 # from werkzeug.datastructures import FileStorage
+
 from config import yuanxi_url, mongo_db
-from common import mongo_client, logging, field_length_limit, DbGidFS
+from common import mongo_client, logging, field_length_limit
+from db import DbGidFS
 from error_code import error_code
 
 # 写死
