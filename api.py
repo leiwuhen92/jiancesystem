@@ -8,6 +8,7 @@ from flask_restful import Api
 from views.podding import PoddingAnalysis, PoddingSearchOption, PoddingSearch, PoddingFirmDetail, PoddingSimilar, PoddingVulGraph
 from views.yuanxi import YuanxiDetect, YuanxiDetectResult, YuanxiCodeLintShow, YuanxiDownload
 from views.yuantu import YuantuSearchNode, YuantuSbom, YuantuSbomSpdx
+from views.ces import GetLinks, UpdateLinks,  GetCondition, SpiderDisplay
 
 
 # flask对象
@@ -33,6 +34,13 @@ flask_api.add_resource(YuanxiDownload, "/api/yuanxi/download")
 flask_api.add_resource(YuantuSearchNode, "/api/yuantu/searchNode")
 flask_api.add_resource(YuantuSbom, "/api/yuantu/sbom")
 flask_api.add_resource(YuantuSbomSpdx, "/api/yuantu/sbomspdx")
+
+# 爬虫固件
+flask_api.add_resource(GetLinks, "/api/spider/getlinks"),
+flask_api.add_resource(UpdateLinks, "/api/spider/updatelinks"),
+
+flask_api.add_resource(GetCondition, "/api/spider/getcondition"),
+flask_api.add_resource(SpiderDisplay, "/api/spider/display")
 
 
 if __name__ == '__main__':

@@ -17,4 +17,9 @@ error_code = {
 
     500: {"http": 400, "message": "uploadId不存在，", "log": "uploadId not exist, "},
     404: {"http": 400, "message": "文件不存在，", "log": "file not exist, "},
+
+    38: {"http": 400, "message": "错误的请求", "log": "request data error"},
+    39: {"http":400, "message": "文件大小不允许小于0或大于2147483647", "log": "totalSize less than 1 or more than 2147483647"},
+    56: {"http":400, "message": "文件名格式错误", "log": "file name format error"},
+    104: {"http":400, "message": "固件md5格式错误", "log": "firmware md5 format error"}
 }
