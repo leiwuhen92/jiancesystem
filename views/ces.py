@@ -51,7 +51,6 @@ class SpiderDisplay(Resource):
         parser.add_argument("page_size", type=int, default=10, help="每页条数", required=False, location="json")
         parser.add_argument("md5", type=str, help="固件md5", required=False, trim=True, location="json")
         parser.add_argument("name", type=str, help="固件名称", required=False, trim=True, location="json")
-        parser.add_argument("version", type=str, help="固件版本", required=False, trim=True, location="json")
         parser.add_argument("vendor", type=str, action='append', help="固件的厂商列表", required=False, trim=True, location="json")
         parser.add_argument("start_size", type=int, help="开始大小", required=False, location="json")
         parser.add_argument("end_size", type=int, help="结束大小", required=False, location="json")
@@ -63,7 +62,6 @@ class SpiderDisplay(Resource):
         page_size = request_args["page_size"]
         firmware_md5 = request_args["md5"]
         firmware_name = request_args["name"]
-        firmware_version = request_args["version"]
         vendor_list = request_args["vendor"]
         start_size = request_args["start_size"]
         end_size = request_args["end_size"]
@@ -88,9 +86,6 @@ class SpiderDisplay(Resource):
                 logging.error(error_code[56]["log"])
                 return {"code": 56, "message": error_code[56]["message"]}, error_code[56]["http"]
             match["name"] = {'$regex': f".*{add_escape(firmware_name)}.*"}
-        # 版本
-        if firmware_version is not None:
-            match["version"] = {'$regex':f".*{firmware_version}.*"}
         # 厂商
         if vendor_list is not None:
             match["vendor"] = {'$in': vendor_list}
