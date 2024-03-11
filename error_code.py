@@ -6,6 +6,7 @@ error_code = {
     200: {"http": 200, "message": "成功", "log": "ok"},
     400: {"http": 400, "message": "发送请求失败", "log": "send request failed"},
 
+    101: {"http": 400, "message": "业务错误", "log": "业务错误"},
     103: {"http": 400, "message": "输入名称版本已存在对应的检测算法", "log": "输入名称版本已存在对应的检测算法"},
     40001: {"http": 401, "message": "登陆失败", "log": "login failed"},
     30004: {"http": 401, "message": "token超时或认证失败或没有token", "log": "token超时或认证失败或没有token"},
