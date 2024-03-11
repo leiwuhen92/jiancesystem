@@ -14,7 +14,7 @@ error_code = {
     40002: {"http": 400, "message": "参数不合法", "log": "illegal parameters"},
     42083: {"http": 400, "message": "缺少参数", "log": "missing parameter"},
     102: {"http": 400, "message": "请求参数校验错误", "log": "请求参数校验错误"},
-
+    108: {"http": 401, "message": "用户尚未登录，请先登录", "log": "The user has not logged in yet, please log in first"},
     500: {"http": 400, "message": "uploadId不存在，", "log": "uploadId not exist, "},
     404: {"http": 400, "message": "文件不存在，", "log": "file not exist, "},
 

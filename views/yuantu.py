@@ -7,12 +7,9 @@ import traceback
 from flask_restful import Resource, reqparse
 import requests
 requests.packages.urllib3.disable_warnings()
-from config import yuantu_url, mongo_db
-from common import mongo_client, logging
+from config import yuantu_url, mongo_db, Yuanu_Usertoken
+from utils.common import mongo_client, logging
 from error_code import error_code
-
-# 写死
-Usertoken = "UUNjYp49qg7S5KxHvYXHh5VjjEDa"
 
 
 class YuantuSearchNode(Resource):
@@ -41,7 +38,7 @@ class YuantuSearchNode(Resource):
         url = yuantu_url + "/iscas/home/searchNode"
         headers = {
             "Content-Type": "application/json",
-            "Usertoken": Usertoken
+            "Usertoken": Yuanu_Usertoken
         }
         body = {
             "keyword": keyword,
@@ -103,7 +100,7 @@ class YuantuSbom(Resource):
         url = yuantu_url + "/iscas/sbom/info"
         headers = {
             "Content-Type": "application/json",
-            "Usertoken": Usertoken
+            "Usertoken": Yuanu_Usertoken
         }
         body = {
             "identity": identity,
@@ -207,7 +204,7 @@ class YuantuSbomSpdx(Resource):
         url = yuantu_url + "/iscas/sbom/spdx"
         headers = {
             "Content-Type": "application/json",
-            "Usertoken": Usertoken
+            "Usertoken": Yuanu_Usertoken
         }
         body = {
             "identity": identity,

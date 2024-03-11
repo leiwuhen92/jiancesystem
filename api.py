@@ -9,7 +9,10 @@ from views.podding import PoddingAnalysis, PoddingSearchOption, PoddingSearch, P
 from views.yuanxi import YuanxiDetect, YuanxiDetectResult, YuanxiCodeLintShow, YuanxiDownload
 from views.yuantu import YuantuSearchNode, YuantuSbom, YuantuSbomSpdx
 from views.ces import GetLinks, UpdateLinks,  GetCondition, SpiderDisplay
-
+from utils.update_token import get_token, check_token, create_token, write_2_py
+from utils.common import logging
+from config import yuanxi_user, yuanxi_pwd
+from error_code import error_code
 
 # flask对象
 flask_app = Flask(__name__)
@@ -43,8 +46,29 @@ flask_api.add_resource(GetCondition, "/api/spider/getcondition"),
 flask_api.add_resource(SpiderDisplay, "/api/spider/display")
 
 
+@flask_app.before_request
+def verify_yuanxi_token():
+    # 非源析接口不处理
+    if "yuanxi" not in request.path:
+        return None
+
+    try:
+        token = get_token()
+        is_valid = check_token(token)
+        logging.info("yaunxi'token is valid:%s" % is_valid)
+        if is_valid:
+            return None
+        else:
+            token = create_token(yuanxi_user, yuanxi_pwd)
+            write_2_py(token)
+    except:
+        return {"code": 400, "message": error_code[400]["message"]}, error_code[400]["http"]
+
+    return None
+
+
 if __name__ == '__main__':
-    flask_app.run()
+    flask_app.run(host='0.0.0.0')
 
 
 

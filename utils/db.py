@@ -2,7 +2,7 @@
 import gridfs
 import bson
 import json
-from common import mongo_client, logging
+from utils.common import mongo_client, logging
 
 
 class DbGidFS(object):

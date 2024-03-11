@@ -1,7 +1,7 @@
 # 作者：zhangqiang
 # 时间：2023-12-5
 # 描述：调用源析系统
-
+import re
 import json
 import hashlib
 import random
@@ -14,13 +14,11 @@ from flask import Response
 from flask_restful import Resource, reqparse
 # from werkzeug.datastructures import FileStorage
 
-from config import yuanxi_url, mongo_db
-from common import mongo_client, logging, field_length_limit
-from db import DbGidFS
 from error_code import error_code
-
-# 写死
-Authorization = "Bearer f1eca0a0a72d94deb76d18950dd9cc9e"
+from config import yuanxi_url, mongo_db
+from utils.common import mongo_client, logging, field_length_limit
+from utils.update_token import get_token
+# from utils.db import DbGidFS
 
 
 class YuanxiDetect(Resource):
@@ -53,7 +51,7 @@ class YuanxiDetect(Resource):
             return {"code": 404, "message": error_code[404]["message"]}, error_code[404]["http"]
 
         url = yuanxi_url + "/sca/api/ext/detect"
-        headers = {"Authorization": Authorization}
+        headers = {"Authorization": get_token()}
         payload = {
             "name": name,
             "version": version,
@@ -112,7 +110,7 @@ class YuanxiDetectResult(Resource):
         uploadId = request_args["uploadId"]
 
         url = yuanxi_url + "/sca/api/ext/getDetectResult"
-        headers = {"Content-Type": "application/json", "Authorization": Authorization}
+        headers = {"Content-Type": "application/json", "Authorization": get_token()}
         payload = {
             "uploadId": uploadId
         }
@@ -173,7 +171,7 @@ class YuanxiCodeLintShow(Resource):
             return {"code": 500, "message": error_code[500]["message"]}, error_code[500]["http"]
 
         scan_url = yuanxi_url + "/sca/api/detect/codeLintShow"
-        headers = {"Content-Type": "application/json", "Authorization": Authorization}
+        headers = {"Content-Type": "application/json", "Authorization": get_token()}
         payload = {
             "uploadId": uploadId,
             "language": language
@@ -206,7 +204,7 @@ class YuanxiDownload(Resource):
         path = request_args["file_path"]
 
         url = yuanxi_url + "/sca" + path
-        headers = { "Content-Type": "application/json", "Authorization": Authorization }
+        headers = { "Content-Type": "application/json", "Authorization": get_token() }
         filename = path.split("/")[-1]
 
         try:

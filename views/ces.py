@@ -10,7 +10,7 @@ from flask_restful import Resource, reqparse
 import requests
 requests.packages.urllib3.disable_warnings()
 from config import mongo_db
-from common import mongo_client, logging, get_length_string
+from utils.common import mongo_client, logging, get_length_string
 from error_code import error_code
 
 

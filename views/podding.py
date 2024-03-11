@@ -10,12 +10,9 @@ import traceback
 from flask_restful import Resource, reqparse
 import requests
 requests.packages.urllib3.disable_warnings()
-from config import podding_url, mongo_db
-from common import mongo_client, logging
+from config import podding_url, mongo_db, Podding_Authorization
+from utils.common import mongo_client, logging
 from error_code import error_code
-
-# 写死
-Authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJuaXN0IiwiZXhwIjo0ODU2MjMxNzMwLCJpZCI6ImNlY2Q1ZTcwYWQ0NDM5ZjhlZGY4NjBlMjk1Mzc5MGE4YWJiNTY0NWJlYTA5OTM3MjliMzYwMjMzNGQxZjQ4ZGMiLCJyb2xlIjowfQ.YIOAC4ZrLJnfLcvZP43YziR0tHZr0gW0KaiYzO0oJws"
 
 
 def upload_precheck(file_path, access_token_headers):
@@ -23,7 +20,7 @@ def upload_precheck(file_path, access_token_headers):
     file_path_pathlib = pathlib.Path(file_path)
     file_data = file_path_pathlib.read_bytes()
     sha256 = hashlib.sha256(file_data).hexdigest()
-    requests_data = {"name": file_path_pathlib.name, "size":len(file_data), "sha-256":sha256}
+    requests_data = {"name": file_path_pathlib.name, "size": len(file_data), "sha-256": sha256}
     response = requests.post(url, data=json.dumps(requests_data), headers=access_token_headers, verify=False)
     resp = json.loads(response.text)
 
@@ -119,8 +116,8 @@ class PoddingAnalysis(Resource):
         md5 = hashlib.md5(file_data).hexdigest()
         sha256 = hashlib.sha256(file_data).hexdigest()
 
-        access_token_headers = {"content-type": "application/json", "Accept": "application/json", "Authorization": Authorization}
-        multipart_headers = {"Authorization": Authorization}
+        access_token_headers = {"content-type": "application/json", "Accept": "application/json", "Authorization": Podding_Authorization}
+        multipart_headers = {"Authorization": Podding_Authorization}
 
         try:
             resp1, status_code_1, sha256 = upload_precheck(file_path, access_token_headers)
@@ -156,7 +153,7 @@ class PoddingSearchOption(Resource):
     def get(self):
         logging.info("in podding get search option".center(40, "*"))
 
-        headers = {"content-type": "application/json", "Authorization": Authorization}
+        headers = {"content-type": "application/json", "Authorization": Podding_Authorization}
         url = podding_url + "/api/firmware_search_option"
 
         try:
@@ -204,7 +201,7 @@ class PoddingSearch(Resource):
         component_list = request_args["component"]
         advanced_search = request_args["advanced_search"]
 
-        headers = {"content-type": "application/json", "Authorization": Authorization}
+        headers = {"content-type": "application/json", "Authorization": Podding_Authorization}
         url = podding_url + "/api/firmware_summary"
         data ={
             "page_num": page_num,
@@ -302,7 +299,7 @@ class PoddingFirmDetail(Resource):
         request_args = parser.parse_args()
         sha256 = request_args["sha256"]
 
-        headers = {"content-type": "application/json", "Authorization": Authorization}
+        headers = {"content-type": "application/json", "Authorization": Podding_Authorization}
         url = podding_url + "/api/firmware_detail"
         data = {"id": sha256}
 
@@ -357,7 +354,7 @@ class PoddingSimilar(Resource):
         request_args = parser.parse_args()
         sha256 = request_args["id"]
 
-        headers = {"content-type": "application/json", "Authorization": Authorization}
+        headers = {"content-type": "application/json", "Authorization": Podding_Authorization}
         url = podding_url + "/api/firmware_similar"
         data = {"id": sha256}
 
@@ -511,7 +508,7 @@ class PoddingVulGraph(Resource):
         request_args = parser.parse_args()
         sha256 = request_args["id"]
 
-        headers = {"content-type": "application/json", "Authorization": Authorization}
+        headers = {"content-type": "application/json", "Authorization": Podding_Authorization}
         url = podding_url + "/api/firmware_vuln"
         data = {"id": sha256}
 
