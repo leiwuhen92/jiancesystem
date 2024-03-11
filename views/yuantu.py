@@ -9,6 +9,7 @@ import requests
 requests.packages.urllib3.disable_warnings()
 from config import yuantu_url, mongo_db, Yuanu_Usertoken
 from utils.common import mongo_client, logging
+from utils.vpn import monitor_trans
 from error_code import error_code
 
 
@@ -49,10 +50,8 @@ class YuantuSearchNode(Resource):
         }
 
         try:
-            response = requests.post(url, headers=headers, json=body, verify=False)
-
-            resp = json.loads(response.text)
-            logging.debug(f"源图查询软件包第{pageIndex}页的结果是:{resp}")
+            resp = monitor_trans(target_url=url, method='POST', body=body, headers=headers)
+            logging.info(f"源图查询软件包第{pageIndex}页的结果是:{resp}")
 
             if resp["code"] == 200:
                 packages = resp["data"]["packages"]
@@ -111,9 +110,7 @@ class YuantuSbom(Resource):
         }
 
         try:
-            response = requests.post(url, headers=headers, json=body, verify=False)
-
-            resp = json.loads(response.text)
+            resp = monitor_trans(target_url=url, method='POST', body=body, headers=headers)
             logging.debug(f"源图查询软件包的SBOM信息结果:{resp}" )
 
             if resp["code"] == 200:
@@ -210,9 +207,8 @@ class YuantuSbomSpdx(Resource):
             "identity": identity,
             "source": source
         }
-        response = requests.post(url, headers=headers, json=body, verify=False)
 
-        resp = json.loads(response.text)
+        resp = monitor_trans(target_url=url, method='POST', body=body, headers=headers)
         logging.debug(f"源图查询软件包的SBOM+SPDX信息结果:{resp}")
 
         if resp['code'] == 200:

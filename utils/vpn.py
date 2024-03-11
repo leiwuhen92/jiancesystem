@@ -20,9 +20,9 @@ def monitor_trans(target_url, method, body, headers):
         response = requests.post(vpn_url, json=data)
         response.raise_for_status()
         result_json = json.loads(response.text)
-        return result_json['data']
+        return json.loads(result_json['data'])
     except Exception as e:
-        print(f"发生未知异常：{e}")
+        print(f"vpn发生未知异常：{e}")
         return
 
 
@@ -34,4 +34,5 @@ if __name__ == '__main__':
         'Content-Type': 'application/json',
     }
 
-    print(monitor_trans(target_url, method, body, headers))
+    resp = monitor_trans(target_url, method, body, headers)
+    print(resp)
