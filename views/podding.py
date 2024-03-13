@@ -47,7 +47,7 @@ def upload(file_path, multipart_headers):
             currentChunkSize = chunkSize
             file = file_data[i * chunkSize : (i+1) * chunkSize]
             # 构造数据
-            files = {"chunkNumber" : (None, chunkNumber),"chunkSize" : (None, chunkSize),"currentChunkSize" : (None, currentChunkSize),"totalSize" : (None, totalSize),"identifier" : (None, identifier),"totalChunks" : (None,totalChunks),"file" : (name, file)}
+            files = {"chunkNumber": (None, chunkNumber), "chunkSize": (None, chunkSize), "currentChunkSize": (None, currentChunkSize), "totalSize": (None, totalSize), "identifier": (None, identifier), "totalChunks": (None, totalChunks), "file": (name, file)}
             # upload
             requests.post(url, files=files, headers=multipart_headers, verify=False)
 
@@ -57,7 +57,7 @@ def upload(file_path, multipart_headers):
         currentChunkSize = totalSize - (chunkSize * (totalChunks-1))
         file = file_data[chunkSize * (totalChunks-1) : totalSize]
         # 构造数据
-        files = {"chunkNumber" : (None, chunkNumber),"chunkSize" : (None, chunkSize),"currentChunkSize" : (None, currentChunkSize),"totalSize" : (None, totalSize),"identifier" : (None, identifier),"totalChunks" : (None,totalChunks),"file": (name, file),}
+        files = {"chunkNumber": (None, chunkNumber), "chunkSize": (None, chunkSize), "currentChunkSize": (None, currentChunkSize), "totalSize": (None, totalSize), "identifier": (None, identifier), "totalChunks": (None,totalChunks), "file": (name, file),}
         # upload
         response = requests.post(url, files=files, headers=multipart_headers, verify=False)
         resp = json.loads(response.text)
@@ -70,7 +70,7 @@ def upload(file_path, multipart_headers):
         currentChunkSize = totalSize
         file = file_data
         # 构造数据
-        files = {"chunkNumber" : (None, chunkNumber),"chunkSize" : (None, chunkSize),"currentChunkSize" : (None, currentChunkSize),"totalSize" : (None, totalSize),"identifier" : (None, identifier),"totalChunks" : (None,totalChunks),"file" : (name, file),}
+        files = {"chunkNumber": (None, chunkNumber),"chunkSize": (None, chunkSize), "currentChunkSize": (None, currentChunkSize), "totalSize": (None, totalSize), "identifier": (None, identifier), "totalChunks": (None, totalChunks), "file": (name, file),}
         # upload
         response = requests.post(url, files=files, headers=multipart_headers, verify=False)
         resp = json.loads(response.text)
@@ -118,6 +118,12 @@ class PoddingAnalysis(Resource):
 
         access_token_headers = {"content-type": "application/json", "Accept": "application/json", "Authorization": Podding_Authorization}
         multipart_headers = {"Authorization": Podding_Authorization}
+
+        # 检查是否已经分析过，若是则不用请求podding分析，直接返回
+        result = mongo_client[mongo_db]["podding_collection"].find_one(filter={"md5": md5})
+        if result:
+            data = {"task_id": result['taskid'], "id": result['sha256']}
+            return {"code": 200, "message": error_code[200]["message"], "data": data}, error_code[200]["http"]
 
         try:
             resp1, status_code_1, sha256 = upload_precheck(file_path, access_token_headers)

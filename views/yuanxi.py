@@ -109,6 +109,17 @@ class YuanxiDetectResult(Resource):
         request_args = parser.parse_args()
         uploadId = request_args["uploadId"]
 
+        result = mongo_client[mongo_db]["yuanxi_collection"].find_one({"uploadId": uploadId})
+        if result:
+            if 'detectStatus' in result:  # 分析结果已在本地数据库，就无须向源析发请求
+                data = {
+                    "detectStatus": result['detectStatus'],
+                    "detectErr": result['detectErr'],
+                    "detectList": result['detectList']
+                }
+                return {"code": 200, "message": error_code[200]["message"], "data": data}, error_code[200]["http"]
+
+        # 分析结果不在本地库，向源析发请求获取
         url = yuanxi_url + "/sca/api/ext/getDetectResult"
         headers = {"Content-Type": "application/json", "Authorization": get_token()}
         payload = {
@@ -124,7 +135,6 @@ class YuanxiDetectResult(Resource):
                 data = resp["data"]
 
                 # 往基本分析里添加“项目名称”、“文件名称”
-                result = mongo_client[mongo_db]["yuanxi_collection"].find_one({"uploadId": uploadId})
                 name = result["name"] if result else ""
                 file_name = result["file_name"] if result else ""
                 detectList = data["detectList"]
@@ -135,7 +145,7 @@ class YuanxiDetectResult(Resource):
                             i["algorithmResult"]["file_name"] = file_name
 
                 detectStatus_map = {1: "已完成", 0: "进行中", 2: "检测失败", 3: "上传或者解压文件失败"}
-                if data["detectStatus"] != 0:   # 1=已完成、0=进行中、2=检测失败、3=上传或者解压文件失败
+                if data["detectStatus"] != 0:
                     newvalues = {"detectStatus": detectStatus_map[data["detectStatus"]], "detectErr": data["detectErr"], "detectList": data["detectList"]}
                     try:
                         mongo_client[mongo_db]["yuanxi_collection"].update_one(filter={"uploadId": uploadId}, update={'$set': newvalues})
