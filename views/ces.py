@@ -9,7 +9,7 @@ import traceback
 from flask_restful import Resource, reqparse
 import requests
 requests.packages.urllib3.disable_warnings()
-from config import mongo_db
+from config import firmware_db, firmware_collection
 from utils.common import mongo_client, logging, get_length_string
 from error_code import error_code
 
@@ -29,8 +29,8 @@ def add_escape(input):
 class GetCondition(Resource):
     def get(self):
         logging.info("in get spider firmware display condition".center(40, "*"))
-        vendor_list = mongo_client[mongo_db]["spider"].distinct("vendor")
-        device_type_list = mongo_client[mongo_db]["spider"].distinct("type")
+        vendor_list = mongo_client[firmware_db][firmware_collection].distinct("vendor")
+        device_type_list = mongo_client[firmware_db][firmware_collection].distinct("type")
 
         # 库中厂商、设备类型可能为空字符
         if '' in vendor_list:
@@ -118,7 +118,7 @@ class SpiderDisplay(Resource):
         logging.info(match)
         try:
             skip = (page_num - 1) * page_size
-            spider_aggregate = mongo_client[mongo_db]["spider"].aggregate([{"$facet": {
+            spider_aggregate = mongo_client[firmware_db][firmware_collection].aggregate([{"$facet": {
                 "total": [
                     {'$match': match},
                     {'$count': "total_count"}

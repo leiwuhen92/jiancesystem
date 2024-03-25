@@ -17,3 +17,8 @@ yuanxi_pwd = "admin@15312050521"
 mongo_ip = "192.168.11.45"
 mongo_port = 27017
 mongo_db = "monitor_system"
+
+firmware_db = "Firmware"
+firmware_collection = "FirmwareInfo"
+
+
